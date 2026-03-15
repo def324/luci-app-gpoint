@@ -23,6 +23,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare Artifacts Directory
+        run: mkdir -p artifacts
+
       - name: Build With OpenWrt SDK Action
         uses: openwrt/gh-action-sdk@main
         env:
