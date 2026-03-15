@@ -23,14 +23,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare Artifacts Directory
-        run: mkdir -p artifacts
+      - name: Prepare Build Directories
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p artifacts
+          mkdir -p action-feed/luci-app-gpoint
+
+          rsync -a --delete \
+            --exclude .git \
+            --exclude .github \
+            --exclude .work \
+            --exclude docs \
+            --exclude artifacts \
+            --exclude action-feed \
+            ./ action-feed/luci-app-gpoint/
 
       - name: Build With OpenWrt SDK Action
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: x86_64-25.12.0
           FEEDNAME: action
+          FEED_DIR: ${{ github.workspace }}/action-feed
           PACKAGES: luci-app-gpoint
           V: s
           ARTIFACTS_DIR: ${{ github.workspace }}/artifacts
